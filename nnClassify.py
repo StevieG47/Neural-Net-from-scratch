@@ -13,7 +13,7 @@ import sklearn.datasets
 
 
 # Function to plot decision boundary for sklearn model
-def plotBoundary(xy,model):
+def plotBoundary(xy,model,title):
     # create mesh grid to plot in, size [xmin-xmax],[ymin-ymax]
     x_min, x_max = xy[:, 0].min() - 1, xy[:, 0].max() + 1 # min/max of x ax 
     y_min, y_max = xy[:, 1].min() - 1, xy[:, 1].max() + 1 # min/max of y ax 
@@ -31,7 +31,7 @@ def plotBoundary(xy,model):
     
     # Also plot training points
     plt.scatter(xy[:,0], xy[:,1],c = label,cmap = plt.cm.coolwarm, edgecolor = 'black')
-    plt.title('Linear Regression Decision Boundary')
+    plt.title(title)
 
 # --------------------------------------SOME NOTES ON NN-------------------------------------------
 # Nerual net is just adaptive basis function
@@ -265,13 +265,22 @@ import sklearn.linear_model as lm
 linearModel = lm.SGDClassifier()
 linearModel.fit(xy,label)
 
-# Plot decision boudnary
-plotBoundary(xy,linearModel) # wow that sucks, lets do nn
+# Plot decision boudnary for linear model
+plotBoundary(xy,linearModel,'Linear Model Decision Boundary') # wow that sucks, lets do nn
+
+
+# TRY AN SVM w/ KERNEL
+from sklearn.svm import SVC
+svmRBF = SVC(C = 50,gamma = .4)
+svmRBF.fit(xy,label)
+
+# Plot decision boundary for svm
+plotBoundary(xy,svmRBF,'SVM Decision Boundary')
 
 
 # NERUAL NETWORK
 # Set number of nodes in hidden layer
-hiddenLayerDimension = 5
+hiddenLayerDimension = 50
 
 # Set number of passes of gradient descent to run
 numPasses = 20000
