@@ -54,7 +54,7 @@ plt.show()
 #def buildNN(numPasses,hiddenLayerDimensions,xy):
 
 # INITIATE MODEL AND PARAMETERS
-hiddenLayerDimension = 5
+hiddenLayerDimension = 20
 
 # Set number of passes of gradient descent to run
 numPasses =20000
@@ -65,7 +65,7 @@ yTrain = yTrain.reshape(len(yTrain),1)
     
 # Gradient descent parameters 
 epsilon = 0.001 # learning rate for gradient descent
-regLambda = 0.01 # regularization strength
+regLambda = .10 # regularization strength
  
 num_examples = len(xTrain) # training set size
 inputDimension = xTrain.shape[1] # input layer dimensionality
@@ -95,16 +95,16 @@ for i in range(numPasses):
     
     # partial derivative of Loss w/ respect to prediction yhat
    # partialL_partialyHat = 2*(a2-yTrain)/num_examples
-    partialL_partialyHat = (a2-y)
+    partialL_partialyHat = (a2-yTrain)
     if partialL_partialyHat[0] == partialL_partialyHat[0]:
         #print(partialL_partialyHat)
-        df = a2-y
-        print(df[5])
+        df = a2-yTrain
+       # print(df[5])
         
     
     # weight gradients
     dW2 = a1.T.dot(partialL_partialyHat) # compute partial L/partial W2
-    dW1 = x.T.dot(partialL_partialyHat.dot(W2.T)*(1-np.power(a1,2))) # compute partialL/partial W1
+    dW1 = xTrain.T.dot(partialL_partialyHat.dot(W2.T)*(1-np.power(a1,2))) # compute partialL/partial W1
     
     # Bias gradients, biases only have 1 column, they are just one value, so take sum 
    # db2 = np.sum(partialL_partialyHat,axis = 0,keepdims = True) # sum probbtilities matrix along row
@@ -136,8 +136,8 @@ a2 = z2
 prediction= a2
 
 plt.figure()
-plt.plot(xTrain,prediction)
+nnPreedict = plt.plot(xTrain,prediction,label = 'Prediction')
 plt.title('Neural Net Prediction')
-#original = plt.plot(x,y,label = 'Original')
+original = plt.plot(x,y,label = 'Original')
 plt.legend()
     
