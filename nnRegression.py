@@ -16,6 +16,7 @@ import random
 x = np.linspace(0,100,num = 101)
 y = np.sin(x/10) + (x/70)**2
 
+
 # plot curve
 plt.plot(x,y)
 
@@ -56,10 +57,14 @@ plt.show()
 hiddenLayerDimension = 5
 
 # Set number of passes of gradient descent to run
-numPasses = 20000
+numPasses =20000
+
+# reshape y from n, to n,1
+y = y.reshape(len(y),1)
+yTrain = yTrain.reshape(len(yTrain),1)
     
 # Gradient descent parameters 
-epsilon = 0.01 # learning rate for gradient descent
+epsilon = 0.001 # learning rate for gradient descent
 regLambda = 0.01 # regularization strength
  
 num_examples = len(xTrain) # training set size
@@ -75,43 +80,64 @@ b1 = np.zeros((1, hiddenLayerDimension))
 b2 = np.zeros((1, outputDimension))
 
 # Initiate model
-#model = {}
-#
-## Gradient Descent (batch gradient descent)
-#print('Training...')
-#for i in range(numPasses):
-#    
-#  #  print(i,' ',W1)
-#    # Forward Pass, take parameters (weights, biases) and move forward through graph computing node values
-#    z1 = xTrain.dot(W1) + b1 # .dot does matrix multiplication
-#    a1 = np.tanh(z1)
-#    z2 = a1.dot(W2) + b2
-#    a2 = z2 
-#
-#    
-#    rowIndex = np.linspace(0,num_examples-1,num=num_examples) # 0:1:num_examples, row numbers
-#    rowIndex = rowIndex.astype(int)
-#
-#    # Get Weight gradients
-#   # probabilities = a2 # [prob0 prob1]
-#    correctColumn = yTrain # correct label is 0 or 1
-#    
-#    dW2 = a1.T # compute partial L/partial W2
-#    dW1 = xTrain.T.dot(probabilities.dot(W2.T)*(1-np.power(a1,2)))  # compute partialL/partial W1
-#    
-#    # Bias gradients, biases only have 1 column, they are just one value, so take sum 
-#    db2 = 1# sum probbtilities matrix along row
-#    db1 = np.sum((probabilities.dot(W2.T)*(1-np.power(a1,2))),axis = 0,keepdims = True) # sum along row
-#    
-#    # Regularization
-#    dW2 = dW2 + regLambda*W2
-#    dW1 = dW1 + regLambda*W1
-#    
-#    # Update weights amd biases
-#    W2 = W2 + (-epsilon*dW2)
-#    W1 = W1 + (-epsilon*dW1)
-#    b2 = b2 + (-epsilon*db2)
-#    b1 = b1 + (-epsilon*db1)
-#    
-#    # Assign new parameters to the model
-#    model = { 'W1': W1, 'b1': b1, 'W2': W2, 'b2': b2}
+model = {}
+
+# Gradient Descent (batch gradient descent)
+print('Training...')
+for i in range(numPasses):
+    
+  #  print(i,' ',W1)
+    # Forward Pass, take parameters (weights, biases) and move forward through graph computing node values
+    z1 = x.dot(W1) + b1 # .dot does matrix multiplication
+    a1 = np.tanh(z1)
+    z2 = a1.dot(W2) + b2
+    a2 = z2 
+    
+    # partial derivative of Loss w/ respect to prediction yhat
+   # partialL_partialyHat = 2*(a2-yTrain)/num_examples
+    partialL_partialyHat = (a2-y)
+    if partialL_partialyHat[0] == partialL_partialyHat[0]:
+        #print(partialL_partialyHat)
+        df = a2-y
+        print(df[5])
+        
+    
+    # weight gradients
+    dW2 = a1.T.dot(partialL_partialyHat) # compute partial L/partial W2
+    dW1 = x.T.dot(partialL_partialyHat.dot(W2.T)*(1-np.power(a1,2))) # compute partialL/partial W1
+    
+    # Bias gradients, biases only have 1 column, they are just one value, so take sum 
+   # db2 = np.sum(partialL_partialyHat,axis = 0,keepdims = True) # sum probbtilities matrix along row
+    db2 =  partialL_partialyHat
+   # db1 = np.sum(partialL_partialyHat.dot(W2.T)*(1-np.power(a1,2)),axis = 0,keepdims = True) # sum along row
+    db1 = partialL_partialyHat.dot(W2.T)*(1-np.power(a1,2))
+    
+    # Regularization
+    dW2 = dW2 + regLambda*W2
+    dW1 = dW1 + regLambda*W1
+    
+    # Update weights and biases
+    W2 = W2 + (-epsilon*dW2)
+    W1 = W1 + (-epsilon*dW1)
+    b2 = b2 + (-epsilon*db2)
+    b1 = b1 + (-epsilon*db1)
+    
+    # Assign new parameters to the model
+    model = { 'W1': W1, 'b1': b1, 'W2': W2, 'b2': b2}
+
+# Get weights and biases from model
+W1,b1,W2,b2 = model['W1'], model['b1'], model['W2'], model['b2']
+
+# Do a forward pass for prediction
+z1 = xTrain.dot(W1) + b1 # .dot does matrix multiplication
+a1 = np.tanh(z1)
+z2 = a1.dot(W2) + b2
+a2 = z2 
+prediction= a2
+
+plt.figure()
+plt.plot(xTrain,prediction)
+plt.title('Neural Net Prediction')
+#original = plt.plot(x,y,label = 'Original')
+plt.legend()
+    

@@ -139,6 +139,7 @@ def buildNN(numPasses,hiddenLayerDimensions,xy):
     for i in range(numPasses):
         
       #  print(i,' ',W1)
+      
         # Forward Pass, take parameters (weights, biases) and move forward through graph computing node values
         z1 = xy.dot(W1) + b1 # .dot does matrix multiplication
         a1 = np.tanh(z1)
@@ -194,6 +195,7 @@ def buildNN(numPasses,hiddenLayerDimensions,xy):
         # Bias gradients, biases only have 1 column, they are just one value, so take sum 
         db2 = np.sum(probabilities,axis = 0,keepdims = True) # sum probbtilities matrix along row
         db1 = np.sum((probabilities.dot(W2.T)*(1-np.power(a1,2))),axis = 0,keepdims = True) # sum along row
+        print(db1.shape)
         
         # Regularization
         dW2 = dW2 + regLambda*W2
