@@ -111,7 +111,7 @@ def plotBoundary(xy,model,title):
 # Finally lets actually do it
 
 # BFunction to build and train the model on training data
-def buildNN(numPasses,hiddenLayerDimensions,xy):
+def buildNN(numPasses,hiddenLayerDimensions,xy,numLabels):
     
     # INITIATE MODEL AND PARAMETERS
         
@@ -121,7 +121,7 @@ def buildNN(numPasses,hiddenLayerDimensions,xy):
      
     num_examples = len(xy) # training set size
     inputDimension = xy.shape[1] # input layer dimensionality
-    outputDimension = xy.shape[1] # output layer dimensionality
+    outputDimension = numLabels # output layer dimensionality
         
     
     # Take random values for weights, biases. Use randn normal distributino w/ mean, variance^2
@@ -257,9 +257,12 @@ def plotNNBoundary(xy,model):
 
 # CREATE DATA
 # make data not linearly separable
-xy, label = sklearn.datasets.make_moons(100, noise=0.2) # 100 samples, make std dev of gaussian noise almost zero
-plt.scatter(xy[:,0], xy[:,1],c = label,cmap = plt.cm.coolwarm)
+numLabels = 5
+xy, label = make_blobs(n_samples = 100,cluster_std = 2, centers = numLabels)
+plt.scatter(xy[:,0], xy[:,1],c = label,cmap = plt.cm.jet)
 plt.title('Data Points')
+
+
 
 
 # SHOW HOW LOGISTIC REGRESSION /LINEAR MODEL SUCKS ON IT
@@ -270,10 +273,9 @@ linearModel.fit(xy,label)
 # Plot decision boudnary for linear model
 plotBoundary(xy,linearModel,'Linear Model Decision Boundary') # wow that sucks, lets do nn
 
-
 # TRY AN SVM w/ KERNEL
 from sklearn.svm import SVC
-svmRBF = SVC(C = 50,gamma = .4)
+svmRBF = SVC(C = 10)
 svmRBF.fit(xy,label)
 
 # Plot decision boundary for svm
@@ -287,7 +289,7 @@ hiddenLayerDimension = 50
 # Set number of passes of gradient descent to run
 numPasses = 20000
 
-model = buildNN(numPasses,hiddenLayerDimension,xy) # train model
+model = buildNN(numPasses,hiddenLayerDimension,xy,numLabels) # train model
 plotNNBoundary(xy,model)# plot it
 
 

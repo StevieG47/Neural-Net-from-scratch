@@ -14,6 +14,8 @@ import random
 
 # CREATE DATA
 x = np.linspace(0,100,num = 101)
+#x = np.linspace(0,17,num = 18)
+#x = np.linspace(20,37,num =18 ) 
 y = np.sin(x/10) + (x/70)**2
 
 
@@ -63,14 +65,14 @@ plt.show()
 hiddenLayerDimension = 10
 
 # Set number of passes of gradient descent to run
-numPasses =20000
+numPasses =50000
 
 # reshape y from n, to n,1
 y = y.reshape(len(y),1)
 yTrain = yTrain.reshape(len(yTrain),1)
     
 # Gradient descent parameters 
-epsilon = 0.001 # learning rate for gradient descent
+epsilon = 0.0011 # learning rate for gradient descent
 regLambda = .00010 # regularization strength
  
 num_examples = len(xTrain) # training set size
@@ -88,8 +90,8 @@ b2 = np.zeros((1, outputDimension))
 # Initiate model
 model = {}
 
-xTrain = x
-yTrain = y
+#xTrain = x
+#yTrain = y
 
 # Gradient Descent (batch gradient descent)
 print('Training...')
@@ -108,7 +110,7 @@ for i in range(numPasses):
     if partialL_partialyHat[0] == partialL_partialyHat[0]:
         #print(partialL_partialyHat)
         df = a2-yTrain
-        #print(df[40])
+        #print(df[3])
         
     
     # weight gradients
@@ -152,5 +154,6 @@ plt.figure()
 nnPreedict = plt.plot(x,prediction,label = 'Prediction')
 plt.title('Neural Net Prediction')
 original = plt.plot(x,y,label = 'Original')
+plt.scatter(x,prediction)
 plt.legend()
     
